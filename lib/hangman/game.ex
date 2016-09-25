@@ -142,6 +142,7 @@ Here's this module being exercised from an iex session:
 
   @spec new_game :: state
   def new_game do
+
   end
 
 
@@ -152,6 +153,12 @@ Here's this module being exercised from an iex session:
   """
   @spec new_game(binary) :: state
   def new_game(word) do
+  game = %{
+    turns_left: 10,
+    word: create_word(word, []),
+    guessed: MapSet.new
+
+  }
   end
 
 
@@ -232,5 +239,12 @@ Here's this module being exercised from an iex session:
   ###########################
 
   # Your private functions go here
+
+  defp create_word(word, word_list) do
+    word_split = String.split(word, ~r{}, trim: true) 
+    for c <- word_split do
+      word_list ++ {c, :false}
+    end
+  end
 
  end

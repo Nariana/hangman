@@ -146,7 +146,7 @@ Here's this module being exercised from an iex session:
       turns_left: 10,
       word: create_word(Hangman.Dictionary.random_word(), []),
       guessed: MapSet.new
-  }
+      }
   end
 
 
@@ -161,7 +161,7 @@ Here's this module being exercised from an iex session:
     turns_left: 10,
     word: create_word(word, []),
     guessed: MapSet.new
-  }
+    }
   end
 
 
@@ -187,6 +187,18 @@ Here's this module being exercised from an iex session:
 
   @spec make_move(state, ch) :: { state, atom, optional_ch }
   def make_move(state, guess) do
+
+    # determine if guess is correct/incorrect
+  #  cond do
+   #   List.keyfind(state.word, guess, 0)
+    #    -> update_state(state, :good_guess, guess)
+     # _ -> update_state(state, :bad_guess, guess)
+    #end
+
+    # determine if game is won
+
+    # determine if game is lost
+    {state, :good_guess, guess}
   end
 
 
@@ -196,9 +208,7 @@ Here's this module being exercised from an iex session:
   Return the length of the current word.
   """
   @spec word_length(state) :: integer
-  def word_length(%{ word: word }) do
-    String.length(word)
-  end
+  def word_length(state), do: length state.word
 
   @doc """
   `list = letters_used_so_far(game)`
@@ -209,8 +219,7 @@ Here's this module being exercised from an iex session:
   """
 
   @spec letters_used_so_far(state) :: [ binary ]
-  def letters_used_so_far(state) do
-  end
+  def letters_used_so_far(state), do: state.guessed
 
   @doc """
   `count = turns_left(game)`
@@ -221,8 +230,7 @@ Here's this module being exercised from an iex session:
   """
 
   @spec turns_left(state) :: integer
-  def turns_left(state) do
-  end
+  def turns_left(state), do: state.turns_left
 
   @doc """
   `word = word_as_string(game, reveal \\ false)`
@@ -235,6 +243,12 @@ Here's this module being exercised from an iex session:
 
   @spec word_as_string(state, boolean) :: binary
   def word_as_string(state, reveal \\ false) do
+    
+   # if reveal == true do
+   #   word_string = def create_string state.word do
+
+    #  end
+    #end
   end
 
   ###########################
@@ -243,6 +257,10 @@ Here's this module being exercised from an iex session:
 
   # Your private functions go here
 
+  #####
+  # Dev Note: I think there's a cleaner way to do this, but it works
+  #####
+  # create word list for new game
   defp create_word(word, word_list) do
     word_split = String.split(word, ~r{}, trim: true) 
     for c <- word_split do
@@ -250,4 +268,44 @@ Here's this module being exercised from an iex session:
     end
   end
 
- end
+  # update word list for guessed letters in word
+  defp update_word(state, guess) do
+    Map.get_and_update(state.word, guess, fn current_value ->
+      {current_value, "true"} end
+    )
+  end
+
+  # update mapset of guessed letters
+  defp update_guessed(state, guess) do
+    # update guessed letters
+    cond do
+      # check if letter already guessed
+      MapSet.member?(state.guessed, guess) ->
+        state.guessed
+      # update guessed mapset if letter not already guessed
+      true -> MapSet.put(state.guessed, guess)
+    end
+  end
+
+  # update game state for good guess
+  defp update_state(state, :good_guess, guess) do
+    update_guessed(state, guess)
+    update_word(state, guess)
+  end 
+
+  # update game state for bad guess
+  defp update_state(state, :bad_guess, guess) do
+  end
+
+  defp create_string([]), do: ""
+  #defp create_string(word) do
+  #  word_string = 
+   #   for elem <- word do
+
+  #    end
+  #end
+
+
+#end module
+end
+

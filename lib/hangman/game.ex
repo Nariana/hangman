@@ -142,7 +142,11 @@ Here's this module being exercised from an iex session:
 
   @spec new_game :: state
   def new_game do
-
+    game = %{
+      turns_left: 10,
+      word: create_word(Hangman.Dictionary.random_word(), []),
+      guessed: MapSet.new
+  }
   end
 
 
@@ -157,7 +161,6 @@ Here's this module being exercised from an iex session:
     turns_left: 10,
     word: create_word(word, []),
     guessed: MapSet.new
-
   }
   end
 

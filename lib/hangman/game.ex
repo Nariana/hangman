@@ -142,11 +142,12 @@ Here's this module being exercised from an iex session:
 
   @spec new_game :: state
   def new_game do
-    game = %{
+    %{
       turns_left: 10,
+      original_word: Hangman.Dictionary.random_word(),
       word: create_word(Hangman.Dictionary.random_word(), []),
       guessed: MapSet.new
-      }
+    }
   end
 
 
@@ -157,11 +158,12 @@ Here's this module being exercised from an iex session:
   """
   @spec new_game(binary) :: state
   def new_game(word) do
-    game = %{
+    %{
       turns_left: 10,
+      original_word: word,
       word: create_word(word, []),
       guessed: MapSet.new
-      }
+    }
   end
 
 
@@ -243,7 +245,6 @@ Here's this module being exercised from an iex session:
 
   @spec word_as_string(state, boolean) :: binary
   def word_as_string(state, reveal \\ false) do
-    result =
       if reveal == true do
         List.foldl(state.word, "", fn(e, word_string) ->
           word_string <> Kernel.elem(e,0) <> " "
@@ -274,21 +275,31 @@ Here's this module being exercised from an iex session:
   #####
   # create word list for new game
   defp create_word(word, word_list) do
-    word_split = String.split(word, ~r{}, trim: true) 
-    for c <- word_split do
-      word_list ++ {c, :false}
-    end
+    #word_split = String.split(word, ~r{}, trim: true) 
+    #for c <- word_split do
+      #word_list ++ {c, :false}
+    #end
+    String.split(word, ~r{}, trim: true)
+    |> Map.new(&{&1, false})
   end
 
   # update word list for guessed letters in word
-  defp update_word(state, guess) do
-    Map.get_and_update(state.word, guess, fn current_value ->
-      {current_value, "true"} end
-    )
-  end
+ # def update_word(state, guess) do
+ #   for e <- state.word do
+ #     #List.keyreplace(state.word, guess, i, {guess, true})
+ #     if e == {guess, false} do
+ #       Tuple.delete_at(e, 1)
+ #       |> Tuple.append(true)
+ #     end
+ #     else
+ #       e
+ #   end
+ #   # Tuple.delete_at(List.keyfind(state.word, guess, 0), 1)
+ #   # Tuple.append(List.keyfind(state.word, guess, 0), true)
+ # end
 
   # update mapset of guessed letters
-  defp update_guessed(state, guess) do
+  def update_guessed(state, guess) do
     # update guessed letters
     cond do
       # check if letter already guessed
@@ -307,7 +318,6 @@ Here's this module being exercised from an iex session:
 
   # update game state for bad guess
   defp update_state(state, :bad_guess, guess) do
-    {0,0}
   end
 
 

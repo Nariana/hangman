@@ -242,23 +242,25 @@ Here's this module being exercised from an iex session:
   """
 
   @spec word_as_string(state, boolean) :: binary
-  #def word_as_string(state, reveal \\ false) do
-  #    List.foldl(state.word, "", fn(e, word_string) -> 
-  #      word_string <> Kernel.elem(e,0) <> " " end)
-  #      |> String.replace(~r/\Z/, "")
-  #end
-
-# need to add reveal = true option here
   def word_as_string(state, reveal \\ false) do
-    result = List.foldl(state.word, "", fn(e, word_string) ->
-      word_string <>
-        if Kernel.elem(e,1) == false do
-          "_ "
-        else
-          Kernel.elem(e,0) <> " "
-        end
-      end)
-      |> String.replace(~r{.$}, "")
+    result =
+      if reveal == true do
+        List.foldl(state.word, "", fn(e, word_string) ->
+          word_string <> Kernel.elem(e,0) <> " "
+          end)
+          |> String.replace(~r{.$}, "")
+
+      else
+        List.foldl(state.word, "", fn(e, word_string) ->
+          word_string <>
+            if Kernel.elem(e,1) == false do
+              "_ "
+            else
+              Kernel.elem(e,0) <> " "
+            end
+          end)
+          |> String.replace(~r{.$}, "")
+      end
   end
 
   ###########################

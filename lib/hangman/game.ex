@@ -145,7 +145,7 @@ Here's this module being exercised from an iex session:
     %{
       turns_left: 10,
       original_word: Hangman.Dictionary.random_word(),
-      word: create_word(word, []),
+      word: create_word(word),
       guessed: MapSet.new
     }
   end
@@ -161,7 +161,7 @@ Here's this module being exercised from an iex session:
     %{
       turns_left: 10,
       original_word: word,
-      word: create_word(word, []),
+      word: create_word(word),
       guessed: MapSet.new
     }
   end
@@ -264,11 +264,7 @@ Here's this module being exercised from an iex session:
   # Dev Note: I think there's a cleaner way to do this, but it works
   #####
   # create word list for new game
-  defp create_word(word, word_list) do
-    #word_split = String.split(word, ~r{}, trim: true) 
-    #for c <- word_split do
-      #word_list ++ {c, :false}
-    #end
+  defp create_word(word) do
     String.split(word, ~r{}, trim: true)
     |> Map.new(&{&1, false})
   end

@@ -145,7 +145,7 @@ Here's this module being exercised from an iex session:
     %{
       turns_left: 10,
       original_word: Hangman.Dictionary.random_word(),
-      word: create_word(Hangman.Dictionary.random_word(), []),
+      word: create_word(word, []),
       guessed: MapSet.new
     }
   end
@@ -190,17 +190,7 @@ Here's this module being exercised from an iex session:
   @spec make_move(state, ch) :: { state, atom, optional_ch }
   def make_move(state, guess) do
 
-    # determine if guess is correct/incorrect
-  #  cond do
-   #   List.keyfind(state.word, guess, 0)
-    #    -> update_state(state, :good_guess, guess)
-     # _ -> update_state(state, :bad_guess, guess)
-    #end
 
-    # determine if game is won
-
-    # determine if game is lost
-    {state, :good_guess, guess}
   end
 
 

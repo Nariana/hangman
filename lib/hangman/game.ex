@@ -142,10 +142,11 @@ Here's this module being exercised from an iex session:
 
   @spec new_game :: state
   def new_game do
+    random = Hangman.Dictionary.random_word()
     %{
       turns_left: 10,
-      original_word: Hangman.Dictionary.random_word(),
-      word: create_word(word),
+      original_word: random,
+      word_string: create_word(random),
       guessed: MapSet.new
     }
   end
@@ -161,7 +162,7 @@ Here's this module being exercised from an iex session:
     %{
       turns_left: 10,
       original_word: word,
-      word: create_word(word),
+      word_string: create_word(word),
       guessed: MapSet.new
     }
   end
@@ -187,10 +188,15 @@ Here's this module being exercised from an iex session:
      of turns left has been reduced by 1
   """
 
+#####
+# Dev note: This function is not implemented.
+#####
   @spec make_move(state, ch) :: { state, atom, optional_ch }
   def make_move(state, guess) do
-
-
+    #MapSet.put(state.guessed, guess)
+    #if MapSet.subset?(guess, state.word_string) do
+    #  {}
+    {state, :won, guess}
   end
 
 
@@ -200,7 +206,7 @@ Here's this module being exercised from an iex session:
   Return the length of the current word.
   """
   @spec word_length(state) :: integer
-  def word_length(state), do: length state.word
+  def word_length(state), do: length state.word_string
 
   @doc """
   `list = letters_used_so_far(game)`
@@ -233,25 +239,31 @@ Here's this module being exercised from an iex session:
   all letters. Letters and underscores are separated by spaces.
   """
 
+  #####
+  # Dev note: This function worked when my word_string value
+  # was a list of tuples, not with my new changes.
+  # I couldn't implement it for the map in time.
+  # Thus, it 's commented out.
+  #####
   @spec word_as_string(state, boolean) :: binary
   def word_as_string(state, reveal \\ false) do
-      if reveal == true do
-        List.foldl(state.word, "", fn(e, word_string) ->
-          word_string <> Kernel.elem(e,0) <> " "
-          end)
-          |> String.replace(~r{.$}, "")
+  #    if reveal == true do
+  #      List.foldl(state.word_string, "", fn(e, result) ->
+  #        result <> Kernel.elem(e,0) <> " "
+  #        end)
+  #        |> String.replace(~r{.$}, "")
 
-      else
-        List.foldl(state.word, "", fn(e, word_string) ->
-          word_string <>
-            if Kernel.elem(e,1) == false do
-              "_ "
-            else
-              Kernel.elem(e,0) <> " "
-            end
-          end)
-          |> String.replace(~r{.$}, "")
-      end
+  #    else
+  #      List.foldl(state.word_string, "", fn(e, result) ->
+  #        result <>
+  #          if Kernel.elem(e,1) == false do
+  #            "_ "
+  #          else
+  #            Kernel.elem(e,0) <> " "
+  #          end
+  #        end)
+  #        |> String.replace(~r{.$}, "")
+  #    end
   end
 
   ###########################
@@ -261,7 +273,7 @@ Here's this module being exercised from an iex session:
   # Your private functions go here
 
   #####
-  # Dev Note: I think there's a cleaner way to do this, but it works
+  # Dev Note: It's ugly...
   #####
   # create word list for new game
   defp create_word(word) do
@@ -271,8 +283,8 @@ Here's this module being exercised from an iex session:
 
   # update word list for guessed letters in word
  # def update_word(state, guess) do
- #   for e <- state.word do
- #     #List.keyreplace(state.word, guess, i, {guess, true})
+ #   for e <- state.word_string do
+ #     #List.keyreplace(state.word_string, guess, i, {guess, true})
  #     if e == {guess, false} do
  #       Tuple.delete_at(e, 1)
  #       |> Tuple.append(true)
@@ -280,8 +292,8 @@ Here's this module being exercised from an iex session:
  #     else
  #       e
  #   end
- #   # Tuple.delete_at(List.keyfind(state.word, guess, 0), 1)
- #   # Tuple.append(List.keyfind(state.word, guess, 0), true)
+ #   # Tuple.delete_at(List.keyfind(state.word_string, guess, 0), 1)
+ #   # Tuple.append(List.keyfind(state.word_string, guess, 0), true)
  # end
 
   # update mapset of guessed letters

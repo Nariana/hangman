@@ -157,11 +157,11 @@ Here's this module being exercised from an iex session:
   """
   @spec new_game(binary) :: state
   def new_game(word) do
-  game = %{
-    turns_left: 10,
-    word: create_word(word, []),
-    guessed: MapSet.new
-    }
+    game = %{
+      turns_left: 10,
+      word: create_word(word, []),
+      guessed: MapSet.new
+      }
   end
 
 
@@ -242,13 +242,23 @@ Here's this module being exercised from an iex session:
   """
 
   @spec word_as_string(state, boolean) :: binary
-  def word_as_string(state, reveal \\ false) do
-    
-   # if reveal == true do
-   #   word_string = def create_string state.word do
+  #def word_as_string(state, reveal \\ false) do
+  #    List.foldl(state.word, "", fn(e, word_string) -> 
+  #      word_string <> Kernel.elem(e,0) <> " " end)
+  #      |> String.replace(~r/\Z/, "")
+  #end
 
-    #  end
-    #end
+# need to add reveal = true option here
+  def word_as_string(state, reveal \\ false) do
+    result = List.foldl(state.word, "", fn(e, word_string) ->
+      word_string <>
+        if Kernel.elem(e,1) == false do
+          "_ "
+        else
+          Kernel.elem(e,0) <> " "
+        end
+      end)
+      |> String.replace(~r{.$}, "")
   end
 
   ###########################
@@ -295,17 +305,10 @@ Here's this module being exercised from an iex session:
 
   # update game state for bad guess
   defp update_state(state, :bad_guess, guess) do
+    {0,0}
   end
 
-  defp create_string([]), do: ""
-  #defp create_string(word) do
-  #  word_string = 
-   #   for elem <- word do
 
-  #    end
-  #end
-
-
-#end module
+# end of module
 end
 
